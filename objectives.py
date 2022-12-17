@@ -173,7 +173,7 @@ def utility( utility : str, lmbda : float, X : tf.Tensor, y : tf.Tensor = 0. ) -
         #   lambda = p / (1-p)
         # For a give lmbda
         #   p = L / (1+L)
-        u = (1.+lmbda) * tf.math.minimum( gains ) - y
+        u = (1.+lmbda) * tf.math.minimum( gains,0 ) - y
         d = tf.where( gains < 0., -(1.+lmbda), 0. )
 
     elif utility == "quad":

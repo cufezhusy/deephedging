@@ -259,7 +259,7 @@ class SimpleWorld_Spot_ATM(object):
         save_name = 'spots_nr_samples_nr_steps'
         csv_extension = str(nSamples) + '_' + str(nSteps) + '_' + str(datetime.today()).split('.')[0].replace(' ', '-').replace(':', '-') + '_' + os.getlogin()
 
-        np.savetxt('results\\' + save_name + '_' + csv_extension + ".csv", spot, delimiter=",")
+        # np.savetxt('results\\' + save_name + '_' + csv_extension + ".csv", spot, delimiter=",")
         # save pathwise bs delta
         # (AM: can be optimized to avoid loops below, but I couldn't get the datatypes to match, so simply loop ...)
         initial_strike = 1.0
@@ -271,7 +271,7 @@ class SimpleWorld_Spot_ATM(object):
                       + 0.5 * ivol_ij * ivol_ij * time_left[j]) / (ivol_ij * sqrt_time_left[j])
                 bs_delta[i][j] = norm.cdf(d1)
         save_name = 'bs_pathwise_delta_nr_samples_nr_steps'
-        np.savetxt('results\\' + save_name + '_' + csv_extension + ".csv", bs_delta, delimiter=",")
+        # np.savetxt('results\\' + save_name + '_' + csv_extension + ".csv", bs_delta, delimiter=",")
 
         # instruments
         # ----------
@@ -409,7 +409,7 @@ class SimpleWorld_Spot_ATM(object):
 
         # Shengyao, add spot
         self.spot = copy.deepcopy(spot)
-        self.model_delta = bs_delta
+        self.model_delta = copy.deep_copy(bs_delta)
         
         self.inst_names = [ 'spot' ]
         if strike > 0.:

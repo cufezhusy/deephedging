@@ -257,11 +257,13 @@ class SimpleWorld_Spot_ATM(object):
 
         # save spot to file
         save_name = 'spots_nr_samples_nr_steps'
-        csv_extension = str(nSamples) + '_' + str(nSteps) + '_' + str(datetime.today()).split('.')[0].replace(' ', '-').replace(':', '-') + '_' + os.getlogin()
+        # csv_extension = str(nSamples) + '_' + str(nSteps) + '_' + str(datetime.today()).split('.')[0].replace(' ', '-').replace(':', '-') + '_' + os.
+        
+ 
 
         # np.savetxt('results\\' + save_name + '_' + csv_extension + ".csv", spot, delimiter=",")
         # save pathwise bs delta
-        # (AM: can be optimized to avoid loops below, but I couldn't get the datatypes to match, so simply loop ...)
+        # (can be optimized to avoid loops below, but I couldn't get the datatypes to match, so simply loop ...)
         initial_strike = 1.0
         bs_delta = copy.deepcopy(ivol)
         for i in range(len(bs_delta)):

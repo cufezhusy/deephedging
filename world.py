@@ -411,7 +411,7 @@ class SimpleWorld_Spot_ATM(object):
 
         # Shengyao, add spot
         self.spot = copy.deepcopy(spot)
-        self.model_delta = copy.deep_copy(bs_delta)
+        self.model_delta = copy.deepcopy(bs_delta)
         
         self.inst_names = [ 'spot' ]
         if strike > 0.:

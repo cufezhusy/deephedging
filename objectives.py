@@ -7,8 +7,8 @@ June 30, 2022
 @author: hansbuehler
 """
 
-from .base import Logger, Config, tf, dh_dtype, VariableModel
-from .agents import AgentFactory
+from base import Logger, Config, tf, dh_dtype, VariableModel
+from agents import AgentFactory
 from cdxbasics import PrettyDict as pdct
 from collections.abc import Mapping
 _log = Logger(__file__)
@@ -135,7 +135,6 @@ def utility( utility : str, lmbda : float, X : tf.Tensor, y : tf.Tensor = 0. ) -
     Computes
         u(X+y) - y
     and its derivative in X for random variable X and OCE variable y 
-
     Parameters
     ----------
     utility: str
@@ -169,12 +168,12 @@ def utility( utility : str, lmbda : float, X : tf.Tensor, y : tf.Tensor = 0. ) -
     elif utility == "cvar":
         # CVar risk measure.
         # 1+lambda = 1/(1-p) where p is the required percentile, e.g. 95%
-        # For a given percentile
+        # For a given percentile
         #   lambda = p / (1-p)
         # For a give lmbda
         #   p = L / (1+L)
-        u = (1.+lmbda) * tf.math.minimum( gains,0 ) - y
-        d = tf.where( gains < 0., -(1.+lmbda), 0. )
+        u = (1.+lmbda) * tf.math.minimum( gains, 0 ) - y
+        d = tf.where( gains < 0., (1.+lmbda), 0. )
 
     elif utility == "quad":
         # quadratic CVaR: quadratic penalty; flat extrapolation
@@ -220,4 +219,4 @@ def utility( utility : str, lmbda : float, X : tf.Tensor, y : tf.Tensor = 0. ) -
             u = u,
             d = d
         )
-    
+ 

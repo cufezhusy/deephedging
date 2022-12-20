@@ -2,9 +2,7 @@
 Deep Hedging Base.
 ------------------
 Import this file in all deep hedging files.
-
 from .base import Logger, Config, tf, tfp, dh_type
-
 June 30, 2022
 @author: hansbuehler
 """
@@ -322,11 +320,3 @@ def fmt_seconds( seconds : int ) -> str:
         return "%ld:%02ld" % (seconds//60, seconds%60)
     return "%ld:%02ld:%02ld" % (seconds//60//60, (seconds//60)%60, seconds%60)    
 
-
-
-
-
-
-
-
-    

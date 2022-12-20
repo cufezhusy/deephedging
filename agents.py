@@ -3,12 +3,11 @@
 Deep Hedging Agents
 -------------------
 Contains simple training agents
-
 June 30, 2022
 @author: hansbuehler
 """
 
-from .base import Logger, Config, tf, dh_dtype, VariableModel
+from base import Logger, Config, tf, dh_dtype, VariableModel
 from collections.abc import Mapping
 _log = Logger(__file__)
 
@@ -140,7 +139,6 @@ class FeedForwardAgent(tf.keras.layers.Layer):
 def AgentFactory( nInst : int, config : Config, name : str = None,  per_step : bool = True, dtype=dh_dtype ) -> tf.keras.layers.Layer:
     """
     Creates an agent network for nInst instruments based on 'config'.
-
     Parameters
     ----------
         nInst : int
@@ -158,7 +156,6 @@ def AgentFactory( nInst : int, config : Config, name : str = None,  per_step : b
             Whether the agent is used per time step, or once per sample.
         dtype : tf.DType
             dtype
-
     Returns
     -------
         An agent model

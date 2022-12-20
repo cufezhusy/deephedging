@@ -3,15 +3,17 @@
 Deep Hedging Example Worlds
 ---------------------------
 Example world for deep hedging.
-
 June 30, 2022
 @author: hansbuehler
 """
+import os
 
-from deephedging.base import Logger, Config, dh_dtype, tf, tfCast, pdct, tf_dict
+from base import Logger, Config, dh_dtype, tf, tfCast, pdct, tf_dict
 from cdxbasics.dynaplot import figure, colors_tableau
 import numpy as np
+from datetime import datetime
 import math as math
+import copy
 #from tqdm import tqdm
 from scipy.stats import norm
 _log = Logger(__file__)
@@ -26,7 +28,6 @@ class SimpleWorld_Spot_ATM(object):
     * To use black & scholes mode use hard overwrite black_scholes = True
     * To turn off stochastic vol use no_stoch_vol = True
     * To turn off mean reverrsion of the drift set no_stoch_drift = True
-
     Members
     -------
         clone()
@@ -36,18 +37,15 @@ class SimpleWorld_Spot_ATM(object):
     ----------
         data : dict
             Numpy data of the world
-
             market : dict
                 per_step : dict - Dictionary of market data with second dimension equal to step size (numpy)
                 per_path : dict - Dictionary of market data valid per path
-
             features : dict
                 per_step : dict - Dictionary of features with second dimension equal to step size (numpy)
                 per_path : dict - Dictionary of features valid per path
                                             
         tf_data : dict
             Returns a dictionary of TF tensors of 'data' for the use of gym.call() or train()
-
         tf_y : tf.Tensor
             y data for gym.call() or train(), usually a dummy vector.
             
@@ -58,11 +56,9 @@ class SimpleWorld_Spot_ATM(object):
         tf_sample_weights : tf.Tensor:
             sample weights for train()
             Dimension (nSamples,1) c.f. https://stackoverflow.com/questions/60399983/how-to-create-and-use-weighted-metrics-in-keras
-
         diagnostics : dict
             Dictionary of diagnostics, e.g. the hidden drift and realized vol
             of the asset (numpy)
-
         nSamples : int
             Number of samples
             
@@ -259,6 +255,24 @@ class SimpleWorld_Spot_ATM(object):
         rvol       = rvol[ixs,:]
         ivol       = ivol[ixs,:]
 
+        # save spot to file
+        save_name = 'spots_nr_samples_nr_steps'
+        csv_extension = str(nSamples) + '_' + str(nSteps) + '_' + str(datetime.today()).split('.')[0].replace(' ', '-').replace(':', '-') + '_' + os.getlogin()
+
+        np.savetxt('results\\' + save_name + '_' + csv_extension + ".csv", spot, delimiter=",")
+        # save pathwise bs delta
+        # (AM: can be optimized to avoid loops below, but I couldn't get the datatypes to match, so simply loop ...)
+        initial_strike = 1.0
+        bs_delta = copy.deepcopy(ivol)
+        for i in range(len(bs_delta)):
+            for j in range(len(bs_delta[i])):
+                ivol_ij = ivol[i][j]
+                d1 = (np.log(spot[i][j] / initial_strike)
+                      + 0.5 * ivol_ij * ivol_ij * time_left[j]) / (ivol_ij * sqrt_time_left[j])
+                bs_delta[i][j] = norm.cdf(d1)
+        save_name = 'bs_pathwise_delta_nr_samples_nr_steps'
+        np.savetxt('results\\' + save_name + '_' + csv_extension + ".csv", bs_delta, delimiter=",")
+
         # instruments
         # ----------
         
@@ -392,6 +406,10 @@ class SimpleWorld_Spot_ATM(object):
         self.dt        = dt
         self.timeline1 = np.cumsum( np.linspace( 0., nSteps, nSteps+1, endpoint=True, dtype=np.float32 ) ) * dt
         self.timeline  = self.timeline1[:-1]
+
+        # Shengyao, add spot
+        self.spot = copy.deepcopy(spot)
+        self.model_delta = bs_delta
         
         self.inst_names = [ 'spot' ]
         if strike > 0.:
@@ -410,7 +428,6 @@ class SimpleWorld_Spot_ATM(object):
                 Allows specifying additional overwrites of specific config values, e.g.
                     world.clone( seed=222, samples=10 )
                 If seed is not specified, a random seed is generated.
-
         Returns
         -------
             New world
@@ -501,7 +518,6 @@ class SimpleWorld_Stock_Option(object):
     """
     Simple World with one BS asset and one fixed option.
     The asset has drift and realized vol different from the option.
-
     Members
     -------
         clone()
@@ -511,30 +527,25 @@ class SimpleWorld_Stock_Option(object):
     ----------
         data : dict
             Numpy data of the world
-
             market : dict
                 per_step : dict - Dictionary of market data with second dimension equal to step size (numpy)
                 per_path : dict - Dictionary of market data valid per path
-
             features : dict
                 per_step : dict - Dictionary of features with second dimension equal to step size (numpy)
                 per_path : dict - Dictionary of features valid per path
                                             
         tf_data : dict
             Returns a dictionary of tensors for the use of gym() or gym.fit()
-
         tf_y : tf.Tensor
             y data for gym.fit()
             
         tf_sample_weights : tf.Tensor:
             sample weights for gym.fit()
-
         tf_sample_weights
             
         diagnostics : dict
             Dictionary of diagnostics, e.g. the hidden drift and realized vol
             of the asset (numpy)
-
         nSamples : int
             Number of samples
             
@@ -756,7 +767,6 @@ class SimpleWorld_Stock_Option(object):
                 Allows specifying additional overwrites of specific config values, e.g.
                     world.clone( seed=222, samples=10 )
                 If seed is not specified, a random seed is generated.
-
         Returns
         -------
             New world
@@ -806,6 +816,4 @@ class SimpleWorld_Stock_Option(object):
 
         if print_input:
             print("Config settings:\n%s" % self.input_report)
-
-
 

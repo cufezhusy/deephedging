@@ -3,13 +3,12 @@
 Deep Hedging Trainer
 --------------------
 Training loop with visualization for 
-
 June 30, 2022
 @author: hansbuehler
 """
 
-from .base import Logger, Config, tf
-from .plot_training import NotebookMonitor
+from base import Logger, Config, tf
+from plot_training import NotebookMonitor
 _log = Logger(__file__)
 
 class NoMonitor(tf.keras.callbacks.Callback):
@@ -40,7 +39,6 @@ class NoMonitor(tf.keras.callbacks.Callback):
 def MonitorFactory( gym, world, val_world, result0, epochs, batch_size, time_out, config ):
     """
     Creates a monitor based on a config file. A monitor prints progress information during training.
-
     Parameters
     ----------
         gym       : VanillaDeepHedgingGym or similar interface
@@ -51,7 +49,6 @@ def MonitorFactory( gym, world, val_world, result0, epochs, batch_size, time_out
         batch_size: batch_size
         time_out  : in seconds
         config    : config
-
     Returns
     -------
         An monitor.
@@ -91,7 +88,6 @@ def train(  gym,
         val_world : world with validation data (e.g. computed using world.clone())
         config    : configuration
         verbose   : how much detail to print
-
     Returns
     -------
         Nothing.        
@@ -136,10 +132,3 @@ def train(  gym,
     except KeyboardInterrupt:
         monitor.why_stopped = "Aborted"
     monitor.finalize()
-
-
-
-
-
-
-

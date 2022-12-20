@@ -3,7 +3,6 @@
 Deep Hedging Trainer
 --------------------
 Training loop with visualization for 
-
 June 30, 2022
 @author: hansbuehler
 """
@@ -12,7 +11,7 @@ import numpy as np
 import time as time
 from cdxbasics.prettydict import PrettyDict as pdct
 from cdxbasics.dynaplot import colors_tableau, figure
-from .base import Logger, npCast, fmt_seconds, mean, err, tf, mean_bins, mean_cum_bins, perct_exp
+from base import Logger, npCast, fmt_seconds, mean, err, tf, mean_bins, mean_cum_bins, perct_exp
 
 _log = Logger(__file__)
 
@@ -547,6 +546,6 @@ class NotebookMonitor(tf.keras.callbacks.Callback):
         """ Plot final result and copy best weights to model """
         if self.why_stopped == "Aborted":
             print("\r                                      \r*** Aborted ... ", end='')
-        self.plot()
+        #self.plot()
         self.gym.set_weights( self.best_weights )
         print("\n Status: %s\n" % self.why_stopped )

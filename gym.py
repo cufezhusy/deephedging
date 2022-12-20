@@ -2,13 +2,12 @@
 Deep Hedging Gym.
 -----------------
 Training environment for deep hedging.
-
 June 30, 2022
 @author: hansbuehler
 """
-from .base import Logger, Config, tf, tfp, dh_dtype, pdct, tf_back_flatten, tf_make_dim
-from .agents import AgentFactory
-from .objectives import MonetaryUtility
+from base import Logger, Config, tf, tfp, dh_dtype, pdct, tf_back_flatten, tf_make_dim
+from agents import AgentFactory
+from objectives import MonetaryUtility
 from collections.abc import Mapping
 _log = Logger(__file__)
 
@@ -227,4 +226,3 @@ class VanillaDeepHedgingGym(tf.keras.Model):
         features_per_path      = { tf_make_dim( _, dim=2 ) for _ in features_per_path_i }
         
         return features_per_step, features_per_path
-            
